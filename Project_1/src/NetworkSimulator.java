@@ -1,6 +1,7 @@
 import java.util.LinkedList;
 
 public class NetworkSimulator {
+	// FROM ECLIPSE
 	private LinkedList<Packet> packetQueue;
 	private static final double TICKTIME = 0.001;
 	private static int packetID;
@@ -9,7 +10,6 @@ public class NetworkSimulator {
 	private static int sumBufferSize;
 	private static double lambda;
 	private static int packetLength;
-	
 	public NetworkSimulator(){
 		packetQueue = new LinkedList<Packet>();
 		packetID = 0;
