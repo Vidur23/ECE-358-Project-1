@@ -1,4 +1,4 @@
-
+// Packet Class
 public class Packet {
 	private int id;
 	private int arrivalTime;
