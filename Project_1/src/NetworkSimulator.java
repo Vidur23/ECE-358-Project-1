@@ -23,7 +23,15 @@ public class NetworkSimulator {
 		return (-1/lambda)*(Math.log(1-U));
 	}
 	
-	public void discreteEventSimulator(double simulationTime, double lambda){
+	/**
+	 * Start the network simulation.
+	 * @param simulationTime - the time to run the simulation for in seconds 
+	 * @param lambda - average packets generation rate in packet per seconds
+	 * @param length - the size of the packet in bits
+	 * @param serviceSpeed - the link speed of the server in bit per second
+	 * @param queueLimit - the maximum limit to the queue (-1 = infinity)
+	 */
+	public void discreteEventSimulator(double simulationTime, double lambda, double length, double serviceSpeed, double queueLimit){
 		double ticks = simulationTime/TICKTIME;
 		double nextPacketArrivalTime = 0;
 		
