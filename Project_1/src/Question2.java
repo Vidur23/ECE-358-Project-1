@@ -8,7 +8,8 @@ import org.junit.Test;
  */
 public class Question2 {
 
-	public NetworkSimulator sim;
+	// Create a new simulator
+	public NetworkSimulator sim = new NetworkSimulator();
 	
 	/**
 	 * Create a new simulator for test suite
@@ -44,8 +45,8 @@ public class Question2 {
 				// Simulate for 20 minutes
 				sim.discreteEventSimulator(1200, lambda, L, C, -1);
 				
-				// TODO Record the results of the test
-				// sim.Report()
+				// Record the results of the test
+				Reporter.Report("Q2.csv");
 			}
 		}
 	}

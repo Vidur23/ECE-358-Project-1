@@ -27,8 +27,8 @@ public class LongTestSuite
 		// Run the simulation
 		sim.discreteEventSimulator(simulationTime, lambda, length, serviceSpeed, -1);
 		
-		// TODO Record the results of the test
-		// sim.Report()
+		// Record the results of the test
+		Reporter.Report("LongTestSuite.csv");
 		
 		// TODO Assert outputs of test
 	}
@@ -45,8 +45,8 @@ public class LongTestSuite
 		// Run the simulation
 		sim.discreteEventSimulator(simulationTime, lambda, length, serviceSpeed, -1);
 		
-		// TODO Record the results of the test
-		// sim.Report()
+		// Record the results of the test
+		Reporter.Report("LongTestSuite.csv");
 		
 		// TODO Assert outputs of test
 	}
@@ -64,8 +64,8 @@ public class LongTestSuite
 		// Run the simulation
 		sim.discreteEventSimulator(simulationTime, lambda, length, serviceSpeed, queueLimit);
 		
-		// TODO Record the results of the test
-		// sim.Report()
+		// Record the results of the test
+		Reporter.Report("LongTestSuite.csv");
 		
 		// TODO Assert outputs of test
 	}
@@ -83,8 +83,8 @@ public class LongTestSuite
 		// Run the simulation
 		sim.discreteEventSimulator(simulationTime, lambda, length, serviceSpeed, queueLimit);
 		
-		// TODO Record the results of the test
-		// sim.Report()
+		// Record the results of the test
+		Reporter.Report("LongTestSuite.csv");
 		
 		// TODO Assert outputs of test
 	}

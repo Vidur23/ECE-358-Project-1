@@ -27,18 +27,24 @@ public class NetworkSimulator {
 	 * Start the network simulation.
 	 * @param simulationTime - the time to run the simulation for in seconds 
 	 * @param lambda - average packets generation rate in packet per seconds
-	 * @param length - the size of the packet in bits
-	 * @param serviceSpeed - the link speed of the server in bit per second
-	 * @param queueLimit - the maximum limit to the queue (-1 = infinity)
+	 * @param L - the size of the packet in bits
+	 * @param C - the link speed of the server in bit per second
+	 * @param K - the maximum limit to the queue (-1 = infinity)
 	 */
-	public void discreteEventSimulator(double simulationTime, double lambda, double length, double serviceSpeed, double queueLimit){
+	public void discreteEventSimulator(double simulationTime, double lambda, double L, double C, double K){
 		double ticks = simulationTime/TICKTIME;
 		double nextPacketArrivalTime = 0;
 		
-		for(int i=0;i<ticks;){
+		// Reset the reporter and record the parameters
+		Reporter.RecordParameters(ticks, lambda, L, C, K);
+		
+		for(int i=0;i<ticks;i++){
 			nextPacketArrivalTime = arrival(i,nextPacketArrivalTime,lambda);
 			service(i);
 			updateStatistics();
+			
+			// Update the reports the results of last tick
+			Reporter.Update(i, packetQueue.size(), null, false); 
 		}
 	}
 	
@@ -82,5 +88,4 @@ public class NetworkSimulator {
 	public double getAverageBufferSize(int totalTicks){
 		return sumBufferSize/totalTicks;
 	}
-	
 }
