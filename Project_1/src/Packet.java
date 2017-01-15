@@ -1,38 +1,37 @@
 // Packet Class
 public class Packet {
 	private int id;
-	private int arrivalTime;
-	private int serviceTime;
-	private int queueDelayTime;
+	private double arrivalTime;
+	private double serviceTime;
+	private double queueDelayTime;
 
-	public int getQueueDelayTime() {
-		return queueDelayTime;
-	}
-
-	public void setQueueDelayTime(int queueDelayTime) {
-		this.queueDelayTime = queueDelayTime;
-	}
-
-	public Packet(int pid, int arrTime, int serTime){
+	public Packet(int pid, double arrTime){
 		id = pid;
 		arrivalTime = arrTime;
-		serviceTime = serTime;
 	}
 	
-	public int getArrivalTime() {
+	public double getArrivalTime() {
 		return arrivalTime;
 	}
-	public void setArrivalTime(int arrivalTime) {
+	public void setArrivalTime(double arrivalTime) {
 		this.arrivalTime = arrivalTime;
 	}
-	public int getServiceTime() {
+	public double getServiceTime() {
 		return serviceTime;
 	}
-	public void setServiceTime(int serviceTime) {
+	public void setServiceTime(double serviceTime) {
 		this.serviceTime = serviceTime;
+		this.queueDelayTime = serviceTime - this.arrivalTime;
 	}
 	
-	public int getSojournTime(){
-		return this.getServiceTime() + this.getQueueDelayTime() - this.getArrivalTime();
+	public double getSojournTime(){
+		return this.serviceTime - this.arrivalTime;
+	}
+	
+	public double getQueueDelayTime() {
+		return queueDelayTime;
+	}
+	public void setQueueDelayTime(double queueTime) {
+		this.queueDelayTime = queueTime;
 	}
 }

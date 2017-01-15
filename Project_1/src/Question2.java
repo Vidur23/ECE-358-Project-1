@@ -8,18 +8,11 @@ import org.junit.Test;
  */
 public class Question2 {
 
-	// Create a new simulator
-	public NetworkSimulator sim = new NetworkSimulator();
+	// Set a tick time of 1 us
+	public double tickRatio = 1e-6;
 	
-	/**
-	 * Create a new simulator for test suite
-	 * @throws Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-		// Create a new simulator
-		sim = new NetworkSimulator();
-	}
+	// Create a new simulator
+	public NetworkSimulator sim = new NetworkSimulator(tickRatio);
 	
 	/**
 	 * Run simulations for no queue size
@@ -42,8 +35,8 @@ public class Question2 {
 			// Run M simulations
 			for(M = 0; M < 10; M++)
 			{
-				// Simulate for 20 minutes
-				sim.discreteEventSimulator(1200, lambda, L, C, -1);
+				// Simulate for 10 minutes
+				sim.discreteEventSimulator(600, lambda, L, C, -1);
 				
 				// Record the results of the test
 				Reporter.Report("Q2.csv");
