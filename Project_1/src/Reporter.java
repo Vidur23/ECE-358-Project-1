@@ -6,39 +6,51 @@ import java.util.Date;
  * The reporter records the events of the simulation a reports them to a CSV file
  */
 public class Reporter {
+	private static double tickRatio;		// The ratio of time per tick
 	private static double totalTicks;		// The total number of ticks in the simulation
 	private static double lastTick;			// The last tick that was recorded
 	private static double sumQueueSize;		// The sum of queue size of each tick
 	private static double sumSojournTime;	// The sum of sojourn time of each packet
 	private static double sumIdle;			// The sum of queue of ticks when the queue was empty
 	private static double sumLoss;			// The sum of loss packets
-	private static double sumPackets;		// The sum of total packets sent
+	private static double sumPacketsRx;		// The sum of total packets received
+	private static double sumPacketsTx;		// The sum of total packets transmitted
 	private static double rho;				// The network utilization ratio
 	private static double lambda;			// The arrival rate of the packets
 	private static double L;				// The size of the packets in bits
 	private static double C;				// The service speed of the link in Mbps
 	private static double K;				// The limit of the queue (-1 = infinity)
+	private static double EN;				// The average sojourn time
+	private static double ET;				// The average sojourn time of a packet
+	private static double P_IDLE;			// The percentage idle time of the queue
+	private static double P_LOSS;			// The percentage of lost packets
 	
 	/**
 	 * Reset the reporters records
 	 */
-	public static void Reset()
+	public static void reset()
 	{
 		lastTick = -1;
 		sumQueueSize = 0;
 		sumSojournTime = 0;
 		sumIdle = 0;
 		sumLoss = 0;
-		sumPackets = 0;
+		sumPacketsRx = 0;
+		sumPacketsTx = 0;
 		rho = 0;
 		lambda = 0;
 		L = 0;
 		C = 0;
 		K = 0;
+		EN = 0;
+		P_IDLE = 0;
+		ET = 0;
+		P_LOSS = 0;
 	}
 	
 	/**
 	 * Calculate the network utilization (rho) and record parameters it for reporting 
+	 * @param ratio - The ratio of time per tick
 	 * @param ticks - The total number of ticks for simulation
 	 * @param arrivalRate - The arrival rate of the packets
 	 * @param length - The size of the packets in bits
@@ -46,26 +58,27 @@ public class Reporter {
 	 * @param queueLimit - The limit of the queue (-1 = infinity)
 	 * @return rho - The network utilization ratio
 	 */
-	public static double RecordParameters(double ticks, double arrivalRate, double length, double serviceSpeed, double queueLimit)
+	public static double RecordParameters(double ratio, double ticks, double arrivalRate, double length, double serviceSpeed, int queueLimit)
 	{
-		Reset();
+		reset();
+		tickRatio = ratio;
 		totalTicks = ticks;
 		lambda = arrivalRate;
 		L = length;
 		C = serviceSpeed;
-		K = queueLimit;
+		K = (double)queueLimit;
 		rho = L * ( lambda / C);
 		return rho;
 	}
 	
 	/**
 	 * Update the report of what has occurred between events
-	 * @param tick - the number of ticks since the beginning of the simulation
-	 * @param queueSize - the number of packets in the queue 
-	 * @param lastPacket - the last packet sent
-	 * @param lostPacket -  if true then a packet was lost last tick
+	 * @param tick - The number of ticks since the beginning of the simulation
+	 * @param queueSize - The number of packets in the queue 
+	 * @param rxPacket - The last packet sent
+	 * @param lostPacket -  If true then a packet was lost last tick
 	 */
-	public static void Update(double tick, int queueSize, Packet lastPacket, Boolean lostPacket)
+	public static void Update(double tick, int queueSize, Packet rxPacket, Boolean lostPacket)
 	{
 		// Calculate tick delta since last update
 		// The time delta is used to multiply the data by skipped time
@@ -85,13 +98,18 @@ public class Reporter {
 		}
 		
 		// Record the last packet's sojourn time if the packet was sent this tick
-		if(lastPacket != null){
-			sumSojournTime += lastPacket.getSojournTime();
-			sumPackets++;
+		if(rxPacket != null){
+			sumSojournTime += rxPacket.getSojournTime();
+			sumPacketsRx++;
+			sumPacketsTx++;
 		}
 		
 		// If a packet was lost last tick then record it
-		if(lostPacket) sumLoss++;
+		if(lostPacket) 
+		{
+			sumLoss++;
+			sumPacketsTx++;
+		}
 					
 		// Remember the last tick value
 		lastTick = tick;
@@ -118,29 +136,24 @@ public class Reporter {
 			
 			// If the file was created then write the header
 			if (!fileExists) {
-				writer.write("now,ticks,lambda,L,C,K,rho,E[N],E[T],P_IDLE,P_LOSS\n");
+				writer.write("now,ticks,Tx,Rx,lost,lambda,K,rho,E[N],E[T],P_IDLE,P_LOSS\n");
 			}
 			
 			// Find the averages and ratios for simulations
-			double EN = sumQueueSize / totalTicks;
-			double P_IDLE = sumIdle / totalTicks;
-			double ET = 0;
-			double P_LOSS = 0;
+			EN = sumQueueSize / totalTicks;
+			P_IDLE = sumIdle / totalTicks;
 			
 			// Prevent divide by zero exception if no packets where sent
-			if (sumPackets != 0)
-			{
-				ET = sumSojournTime / sumPackets;
-				P_LOSS = sumLoss / sumPackets;
-			}
+			if (sumPacketsRx != 0) ET = (sumSojournTime * tickRatio) / sumPacketsRx;
+			if (sumPacketsTx != 0) P_LOSS = sumLoss / sumPacketsTx;
 			
 			// Get the current time of writing
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			String now = dateFormat.format(new Date());
 			
 			// Write each parameter and output to match header
-			String CSVFormat = "%1s,%2$.0f,%3$.3f,%4$.3f,%5$.3f,%6$.3f,%7$.3f,%8$.3f,%9$.3f,%10$.3f,%11$.3f\n";
-			String CSVWrite = String.format(CSVFormat, now, totalTicks, lambda, L, C, K, rho, EN, ET, P_IDLE, P_LOSS);
+			String CSVFormat = "%1s,%2$f,%3$f,%4$f,%5$.3f,%6$f,%7$f,%8$f,%9$e,%10$f,%11$f,%12$f\n";
+			String CSVWrite = String.format(CSVFormat, now, totalTicks, sumPacketsTx, sumPacketsRx, sumLoss, lambda, K, rho, EN, ET, P_IDLE, P_LOSS);
 			writer.write(CSVWrite);
 		} catch (IOException e) {
 			System.out.print("Exception: failed to write to file " + filename);
