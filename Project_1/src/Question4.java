@@ -7,7 +7,9 @@ import org.junit.Test;
  * Unit tests for questions 4 simulations
  */
 public class Question4 {
-
+	// The length time that simulation will run for in seconds
+	public double simTime = 600;
+	
 	// Set a tick time of 1 us
 	public double tickRatio = 1e-6;
 	
@@ -31,19 +33,25 @@ public class Question4 {
 		for (int K : queueSize)
 		{
 			// Simulation for different simulation 
-			for (rho = 0.5; rho <= 1.5; rho += 0.1)
+			for (rho = 0.5; rho < 1.6; rho += 0.1)
 			{
 				// Calculate the arrival rate
 				lambda = rho * ( C / L);
+				
+				System.out.print("M, simTime, lambda, L, C, K\n");
 				
 				// Run N simulations
 				for(M = 0; M <10; M++)
 				{
 					// Simulate for 20 minutes
-					sim.discreteEventSimulator(600, lambda, L, C, K);
+					sim.discreteEventSimulator(simTime, lambda, L, C, K);
 					
 					// Record the results of the test
 					Reporter.Report("Q4.csv");
+					
+					String simFormat = "%1$f, %2$f, %3$f, %4$f, %5$f, %6$f\n";
+					String simResults = String.format(simFormat, M, simTime, lambda, L, C, K);
+					System.out.print(simResults);
 				}
 			}
 		}
