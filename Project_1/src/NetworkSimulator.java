@@ -30,16 +30,17 @@ public class NetworkSimulator {
 	 * @param K - the maximum limit to the queue (-1 = infinity)
 	 */
 	public void discreteEventSimulator(double simulationTime, double lambda, double L, double C, int K){
-		ticks = simulationTime/tickRatio;
-		
 		// Reset the environment and record the parameters
+		ticks = simulationTime/tickRatio;
 		Reporter.RecordParameters(tickRatio, ticks, lambda, L, C, K);
 		generator.setup(lambda, K, tickRatio);
 		server.setup(L, C, tickRatio);
 		packetQueue.clear();
 		
 		// Run the simulation
-		for(double i=0;i<ticks;i++){
+		//for(double i=0;i<ticks;i++){
+		double i = 0;
+		while (i < ticks) {
 			// Check if a new packet arrived?
 			Boolean lostPacket = generator.arrival(i);
 			
@@ -48,6 +49,15 @@ public class NetworkSimulator {
 			
 			// Update the reports the results of last tick
 			Reporter.Update(i, packetQueue.size(), sentPacket, lostPacket); 
+			
+			// Advance to the next event
+			double nextArrival = generator.getNextArrivalTick();
+			double nextService = server.getNextServiceTick();
+			if (server.isIdle()) {
+				i = nextArrival;
+			} else {
+				i = Math.min(nextArrival, nextService);
+			}
 		}
 	}
 }

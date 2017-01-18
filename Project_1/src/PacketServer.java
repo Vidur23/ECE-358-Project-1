@@ -19,6 +19,15 @@ public class PacketServer {
 	}
 	
 	/**
+	 * Is the queue idle?
+	 * @return True if both queue and buffer are empty, false otherwise.
+	 */
+	public Boolean isIdle()
+	{
+		return packetQueue.size() == 0 && packetBuffer == null;
+	}
+	
+	/**
 	 * Process the server to see if a new packet can be served
 	 * @param ticks - The current tick in the simulation.
 	 * @return The packet that is ready to be sent.

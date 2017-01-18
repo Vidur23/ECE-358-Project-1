@@ -12,8 +12,8 @@ public class QuickTestSuite
 	// Set for a minute simulation
 	public double simTime = 1200;
 	
-	// Set a short tick time of 10 us
-	public double tickRatio = 1e-5;
+	// Set a short tick time of 1 s
+	public double tickRatio = 1;
 	
 	// Create a new simulator
 	public NetworkSimulator sim = new NetworkSimulator(tickRatio);
