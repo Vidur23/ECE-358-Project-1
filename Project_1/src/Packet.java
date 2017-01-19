@@ -51,6 +51,14 @@ public class Packet {
 	}
 	
 	/**
+	 * The unique Id of the packet.
+	 * @return Returns the packet ID number
+	 */
+	public int getId(){
+		return this.id;
+	}
+	
+	/**
 	 * Calculate the sojourn time of the packet.
 	 * @return How long the packet took from the arrival to departure.
 	 */

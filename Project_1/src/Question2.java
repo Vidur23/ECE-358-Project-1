@@ -1,6 +1,3 @@
-import static org.junit.Assert.*;
-
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -9,12 +6,9 @@ import org.junit.Test;
 public class Question2 {
 	// The length time that simulation will run for in seconds
 	public double simTime = 600;
-
-	// Set a tick time of 1 us
-	public double tickRatio = 1e-6;
 	
 	// Create a new simulator
-	public NetworkSimulator sim = new NetworkSimulator(tickRatio);
+	public NetworkSimulator sim = new NetworkSimulator(1);
 	
 	/**
 	 * Run simulations for no queue size
@@ -25,11 +19,11 @@ public class Question2 {
 		double M;			// Number of times to run simulation 
 		double lambda;		// Packet arrival rate
 		double L = 2000;	// Packet length is 2000 bits
-		double C = 1e+6;	// Service speed is 1Mbps
+		double C = 1e+6;	// Service speed is 1 Mbps
 		double rho;			// Utilization of the queue
 		
 		// Simulation for different simulation 
-		for (rho = 0.2; rho < 0.9; rho += 0.1)
+		for (rho = 0.2; rho <= 0.9; rho += 0.1)
 		{
 			// Calculate the arrival rate
 			lambda = rho * ( C / L);
