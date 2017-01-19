@@ -29,8 +29,7 @@ public class Reporter {
 	/**
 	 * Reset the reporters records
 	 */
-	public static void reset()
-	{
+	public static void reset() {
 		lastTick = -1;
 		sumQueueSize = sumSojournTime = sumIdle = sumLoss = sumPacketsRx = sumPacketsTx = 0;
 		rho = lambda = L = C = K = EN = P_IDLE = ET = P_LOSS = lastSize = 0;
@@ -46,8 +45,8 @@ public class Reporter {
 	 * @param queueLimit - The limit of the queue (-1 = infinity)
 	 * @return rho - The network utilization ratio
 	 */
-	public static double RecordParameters(double ratio, double ticks, double arrivalRate, double length, double serviceSpeed, int queueLimit)
-	{
+	public static double RecordParameters(double ratio, double ticks, double arrivalRate, 
+            double length, double serviceSpeed, int queueLimit) {
 		reset();
 		tickRatio = ratio;
 		totalTicks = ticks;
@@ -74,27 +73,23 @@ public class Reporter {
 		double tickDelta = tick - lastTick;
 		
 		// If queue empty record as idle otherwise record queue size
-		if (queueSize == 0)
-		{
+		if (queueSize == 0) {
 			// Record that the queue has empty for delta ticks
 			sumIdle += tickDelta;
-		}
-		else
-		{
+		} else {
 			// Record how big was the queue was since last update
 			sumQueueSize += queueSize * tickDelta;
 		}
 		
 		// Record the last packet's sojourn time if the packet was sent this tick
-		if(rxPacket != null){
+		if(rxPacket != null) {
 			sumSojournTime += rxPacket.getSojournTime();
 			sumPacketsRx++;
 			sumPacketsTx++;
 		}
 		
 		// If a packet was lost last tick then record it
-		if(lostPacket) 
-		{
+		if(lostPacket) {
 			sumLoss++;
 			sumPacketsTx++;
 		}
@@ -110,8 +105,7 @@ public class Reporter {
 	 * Report on the simulation to the passed CSV file.
 	 * @param filename - The name of the file to write the report to.
 	 */
-	public static void Report(String filename)
-	{
+	public static void Report(String filename) {
 		FileWriter writer = null;
 		
 		try {
@@ -127,7 +121,7 @@ public class Reporter {
 			
 			// If the file was created then write the header
 			if (!fileExists) {
-				writer.write("now,ticks,ratio,Tx,Rx,lost,lambda,K,rho,E[N],E[T],P_IDLE,P_LOSS\n");
+				writer.write("now,time,ticks,Tx,Rx,lost,lambda,K,rho,E[N],E[T],P_IDLE,P_LOSS\n");
 			}
 			
 			// Add the last queue size to the transmitted queue size
@@ -149,8 +143,9 @@ public class Reporter {
 			double simTime = totalTicks * tickRatio;
 			
 			// Write each parameter and output to match header
-			String CSVFormat = "%1s,%2$f,%3$f,%4$f,%5$.3f,%6$f,%7$f,%8$f,%9$f,%10$e,%11$f,%12$f,%13$f\n";
-			String CSVWrite = String.format(CSVFormat, now, simTime, tickRatio, sumPacketsTx, sumPacketsRx, sumLoss, lambda, K, rho, EN, ET, P_IDLE, P_LOSS);
+			String f = "%1s,%2$f,%3$f,%4$f,%5$.3f,%6$f,%7$f,%8$f,%9$f,%10$e,%11$f,%12$f,%13$f\n";
+			String CSVWrite = String.format(f, now, simTime, tickRatio, sumPacketsTx, 
+                sumPacketsRx, sumLoss, lambda, K, rho, EN, ET, P_IDLE, P_LOSS);
 			writer.write(CSVWrite);
 		} catch (IOException e) {
 			System.out.print("Exception: failed to write to file " + filename);

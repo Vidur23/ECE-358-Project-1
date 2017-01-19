@@ -32,19 +32,19 @@ public class PacketServer {
 	 * @param ticks - The current tick in the simulation.
 	 * @return The packet that is ready to be sent.
 	 */
-	public Packet service(double ticks){
+	public Packet service(double ticks) {
 		// Remember if a packet is sent
 		Packet sendPacket = null;
 		
 		// If there is a packet in the buffer and service time is done then send packet
-		if(packetBuffer != null && ticks >= nextServiceTick){
+		if(packetBuffer != null && ticks >= nextServiceTick) {
 			sendPacket = packetBuffer;
 			sendPacket.setServiceTime(ticks);
 			packetBuffer = null;
 		}
 		
 		// If the queue is not empty and there is room in the buffer then service the packet
-		if(!packetQueue.isEmpty() && packetBuffer == null){
+		if(!packetQueue.isEmpty() && packetBuffer == null) {
 			packetBuffer = packetQueue.remove();
 			packetBuffer.setQueueDelayTime(ticks);
 			nextServiceTick = ticks + serviceTicks;

@@ -44,6 +44,9 @@ public class NetworkSimulator {
 		// Run the simulation
 		double i = 0;
 		while (i <= ticks) {
+            // Record queue size before the 
+            int queueSize =  packetQueue.size();
+        
 			// Check if a new packet arrived?
 			Boolean lostPacket = generator.arrival(i);
 
@@ -51,7 +54,7 @@ public class NetworkSimulator {
 			Packet sentPacket = server.service(i);
 
 			// Update the reports the results of last tick
-			Reporter.Update(i, packetQueue.size(), sentPacket, lostPacket); 
+			Reporter.Update(i, queueSize, sentPacket, lostPacket); 
 
 			// Advance to the next event: packet arrival or packet serviced
 			double nextArrival = generator.getNextArrivalTick();
